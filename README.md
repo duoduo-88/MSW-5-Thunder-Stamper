@@ -1,4 +1,4 @@
-# MSW 5 Thunder Stamper
+# MSW 五雷印 浮水印製作工具 MSW 5 Thunder Stamper
 
 這是一個用於生成MSW造型水印的工具，支援自訂png圖片或英數字碼並套用到圖片上。
 
