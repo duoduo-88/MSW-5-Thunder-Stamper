@@ -1,79 +1,98 @@
-# MSW 五雷印 浮水印製作工具 MSW 5 Thunder Stamper
+# MSW 5 Thunder Stamper
 
-這是一個用於生成MSW造型水印的工具，支援自訂png圖片或英數字碼並套用到圖片上。
-這個工具在6月底的時候就有相關構想，不過實際如何使用，仍取決於創作者本身。
-它既可以應用在作品展示時作為浮水印，也可以作為最終販售時的防偽標記。
-但需要注意的是，水印可能會對造型本身造成一定影響，因此建議在使用時保持審慎評估。
+[繁體中文](README_zh-TW.md)
 
----
+MSW 5 Thunder Stamper is a Windows desktop tool for placing repeated text or glyph-based authenticity marks at positions defined by a red-point map. It supports an embedded position map, optional external `origin.png` maps, custom PNG glyphs, system fonts, randomized visual effects, multi-process rendering, and transparent PNG export.
 
-## 使用方式
+Current release: **v1.0.1**
 
-### 方案一：直接執行 EXE
-1. 解壓縮下載的壓縮包。
-2. 執行 `MSW 5 Thunder Stamper.exe`。
-3. 第一次啟動會自動建立一個 `glyphs` 資料夾。
-4. （可選）將自製的字元 PNG（a~z, A~Z, 0~9）放進 `glyphs` 資料夾。
-5. 執行程式或 EXE，輸入文字。
-6. 調整參數（參數細節可以看旁邊的問號提示）
-7. 點擊「生成」按鈕，預覽區會顯示水印效果，若不滿意可以再調整參數重新生成。
-8. 可切換背景顏色 (灰 / 黑 / 白 / 透明網格) 方便檢視。
-9. 匯出png圖檔，可以匯出合成水印的圖檔或者單純水印圖檔再自行到psd製作上架的psd檔。
+[Download the Windows package](https://github.com/duoduo-88/MSW-5-Thunder-Stamper/releases/latest)
 
-### 方案二：使用 Python 原始碼
-1. 安裝 Python 3.10+。
-2. 安裝必要套件：
-   ```bash
-   pip install pillow PySide6
-   ```
-3. 執行：
-   ```bash
-   python "MSW 5 Thunder Stamper v1.0.0.py"
-   ```
+## Features
 
----
+- Places a code at every detected point in the selected position map.
+- Includes an embedded red-point map and can optionally use an external `origin.png`.
+- Merges connected red pixels into one placement point by default.
+- Uses custom alphanumeric PNG glyphs or a selected `.ttf`/`.otf` system font.
+- Supports arbitrary-length text in system-font mode.
+- Adjusts scale, glyph opacity, spacing, global and per-character jitter, and X/Y offset.
+- Adds glyph noise, edge feathering, colored glow, and glow noise.
+- Uses multiple processes and configurable chunk sizes for large point sets.
+- Provides dark, white, gray, checkerboard, or custom preview backgrounds without baking the preview background into the output.
+- Exports the composed result as PNG.
 
-## 檔案結構
+## Requirements
+
+### Windows package
+
+- Windows 10 or 11
+- A program capable of extracting `.7z` archives
+- Sufficient memory for the selected image and worker-process count
+
+Extract the latest release archive and run the included executable. A separate Python installation is not required.
+
+### Python source
+
+- Python 3.10 or newer is recommended
+- PySide6
+- Pillow
+
+Install dependencies:
+
+```powershell
+python -m pip install PySide6 Pillow
 ```
-MSW 5 Thunder Stamper.exe    # 可執行檔
-MSW 5 Thunder Stamper v1.0.0.py # 原始碼
-glyphs/                     # 字元素材（a~z, A~Z, 0~9 PNG）
-origin.png                  # 預設紅點圖
-README.md                   # 本說明文件
+
+Run the current source file:
+
+```powershell
+python "MSW 5 Thunder Stamper v1.0.1 .py"
 ```
 
----
+## Basic Workflow
 
-## 注意事項
-- `glyphs` 資料夾一定要存在（就算是空的，程式會自動建立）。
-- 字元 PNG 素材需自行準備，放入 `glyphs` 資料夾。
-- 預設紅點圖檔名為 `origin.png`。
+1. Load the PNG, JPEG, or BMP image that will receive the marks.
+2. Enter the desired code or text.
+3. Choose a placement-map mode:
+   - Leave **Prefer embedded red points** enabled to use the built-in map, resized to the loaded image.
+   - Disable it to look for `origin.png` beside the loaded image or the script.
+4. Choose a text-rendering mode:
+   - PNG glyph mode uses files from `glyphs`, the loaded image's folder, or the script folder.
+   - System-font mode uses a selected font and may require explicitly choosing a `.ttf` or `.otf` file.
+5. Adjust placement, opacity, noise, feathering, glow, CPU-worker, and chunk settings.
+6. Select **Generate Watermark** (`生成水印`) and inspect the preview.
+7. Select **Save PNG** (`另存PNG`) to export the result.
 
----
+## Custom PNG Glyphs
 
-## 授權 | License
+The application creates a `glyphs` directory when it starts. In PNG glyph mode:
 
-MIT License
+- Supported lookup characters are letters and digits.
+- Filenames are uppercase, for example `A.png`, `B.png`, and `7.png`.
+- Input characters are converted to uppercase for lookup.
+- Missing glyphs are rendered as a crossed placeholder box.
+- Transparent RGBA PNG files are recommended.
+
+Use system-font mode when lowercase distinctions, spaces, punctuation, or other Unicode characters are required.
+
+## Position Maps
+
+The program detects red pixels in a position map and stamps the code around those coordinates. With **Merge nearby red points** enabled, connected red pixels are treated as one component to avoid many overlapping marks from a single dot. An external `origin.png` is resized to the loaded image dimensions when needed.
+
+## Privacy
+
+The source code reads and writes local image and font files only. It does not include an upload, network, or telemetry client.
+
+## Limitations
+
+- Results depend on the placement map, font or glyph quality, and selected parameters.
+- PNG glyph mode supports alphanumeric file lookup only; unsupported or missing glyphs use placeholders.
+- Automatic system-font file discovery may fail, in which case a `.ttf` or `.otf` file must be selected manually.
+- High point counts, large images, many worker processes, and complex glow settings can consume substantial memory and processing time.
+- The tool creates a visual marking layer but does not provide cryptographic signing or proof of ownership.
+
+## License
+
+The project source code is licensed under the [MIT License](LICENSE). PySide6, Pillow, and components included in packaged builds retain their own licenses; see [Third-Party Notices](THIRD_PARTY_NOTICES.md).
 
 Copyright (c) 2025 DuoDuo
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-作者：**DuoDuo**  
-發布：**2025**
