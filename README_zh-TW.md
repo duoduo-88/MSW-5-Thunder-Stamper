@@ -4,7 +4,7 @@
 
 MSW 五雷印是一款 Windows 桌面防盜浮水印工具，可為圖片加入可調整的識別標記，協助創作者辨識與保護自己的作品。
 
-目前發佈版本：**v1.1.0**
+目前發佈版本：**v1.1.1**
 
 [下載最新版本](https://github.com/duoduo-88/MSW-5-Thunder-Stamper/releases/latest)
 

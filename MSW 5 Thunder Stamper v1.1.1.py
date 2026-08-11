@@ -32,7 +32,7 @@ from PySide6 import QtWidgets, QtGui, QtCore
 # live in the help popups.
 UI_TEXT = {
     "zh": {
-        "title":"MSW 五雷印浮水印製作工具 v1.1.0", "load":"載入圖片或紅點／定位圖",
+        "title":"MSW 五雷印浮水印製作工具 v1.1.1", "load":"載入圖片或紅點／定位圖",
         "placeholder":"輸入浮水印文字，最多 128 個字元（例：AB12C）",
         "prefer":"優先使用內建紅點圖", "prefer_tip":"勾選時一律使用內建紅點圖，即使圖片資料夾內另有 origin.png。",
         "merge":"合併相連紅點", "merge_tip":"將相連的紅色像素視為單一定位點，避免實心紅點的每個像素都各自生成浮水印。只有需要逐像素生成時才取消勾選。",
@@ -48,17 +48,19 @@ UI_TEXT = {
         "char_jitter":"單字抖動", "char_jitter_tip":"每個字元各自增加的隨機偏移範圍，單位為像素。",
         "offx":"整體偏移 X", "offx_tip":"相對定位點的水平位移；正值向右。",
         "offy":"整體偏移 Y", "offy_tip":"相對定位點的垂直位移；正值向上。",
-        "noise":"噪點密度 (0–1)", "noise_tip":"字元本體的不透明像素出現噪點的機率。",
-        "noise_color":"彩色噪點比 (0–1)", "noise_color_tip":"噪點使用隨機彩色而非黑白的比例。",
+        "noise":"噪點密度", "noise_tip":"可調範圍 0～1；建議 0.01～0.08。數值越高，字元本體的不透明像素越容易出現噪點。",
+        "noise_color":"彩色噪點比", "noise_color_tip":"可調範圍 0～1；建議 0.10～0.40。控制字元噪點使用隨機彩色而非黑白的比例。",
         "edge":"字邊羽化", "edge_tip":"字元本體 Alpha 邊緣的高斯羽化半徑。",
         "glow_spread":"光暈擴散", "glow_spread_tip":"光暈向外擴張的半徑，單位為像素。",
         "glow_feather":"光暈羽化", "glow_feather_tip":"光暈 Alpha 的高斯羽化半徑。",
         "glow_alpha":"光暈透明度", "glow_alpha_tip":"0～255；控制光暈的整體不透明度。",
-        "glow_mix":"光暈混色 (0–1)", "glow_mix_tip":"光暈每個像素與隨機顏色混合的比例。",
-        "glow_noise":"光暈噪點 (0–1)", "glow_noise_tip":"光暈像素產生顏色起伏的機率。",
-        "glow_noise_color":"光暈彩噪比 (0–1)", "glow_noise_color_tip":"光暈噪點使用隨機彩色的比例。",
+        "glow_mix":"光暈混色", "glow_mix_tip":"可調範圍 0～1；建議 0.10～0.40。控制光暈像素與隨機顏色混合的比例。",
+        "glow_noise":"光暈噪點", "glow_noise_tip":"可調範圍 0～1；建議 0.00～0.08。控制光暈像素產生顏色起伏的機率。",
+        "glow_noise_color":"光暈彩噪比", "glow_noise_color_tip":"可調範圍 0～1；建議 0.10～0.40。控制光暈噪點使用隨機彩色的比例。",
         "workers":"平行工作數", "workers_tip":"多進程工作數；預設最多 8，避免大型圖片同時占用過多記憶體。",
         "batch":"每批紅點數", "batch_tip":"太小會增加整圖傳輸開銷，太大會降低平行度；建議總批數約為工作數的 2～4 倍。",
+        "zoom_out_tip":"縮小預覽；最低 1%。", "zoom_in_tip":"放大預覽；最高 800%。",
+        "zoom_value_tip":"目前的預覽縮放比例；可用滑鼠滾輪縮放，雙擊預覽可重設為 100%。",
         "bg_tip":"預覽背景；只影響畫面顯示，不會寫入輸出檔。", "bg":["深灰","白色","50% 灰","棋盤格","自訂圖片"],
         "custom_bg":"載入自訂背景（僅預覽）", "custom_bg_tip":"載入預覽用背景圖片；不會寫入輸出檔。",
         "render":"生成浮水印", "render_tip":"依紅色定位點分批生成浮水印，再合成到目前載入的圖片。",
@@ -67,7 +69,7 @@ UI_TEXT = {
         "lang":"EN", "lang_tip":"Switch to English", "worker_suffix":" 個", "batch_suffix":" 點/批",
     },
     "en": {
-        "title":"MSW 5 Thunder Stamper v1.1.0", "load":"Load Image / Marker Map",
+        "title":"MSW 5 Thunder Stamper v1.1.1", "load":"Load Image / Marker Map",
         "placeholder":"Watermark text, max. 128 chars (e.g. AB12C)",
         "prefer":"Use Built-in Markers", "prefer_tip":"Always use the built-in marker map, even when origin.png exists beside the loaded image.",
         "merge":"Merge Connected Marks", "merge_tip":"Treat connected red pixels as one marker so a solid red dot creates one watermark. Disable only to stamp every red pixel.",
@@ -83,17 +85,19 @@ UI_TEXT = {
         "char_jitter":"Char Jit.", "char_jitter_tip":"Independent random offset range for each character, in pixels.",
         "offx":"Offset X", "offx_tip":"Horizontal offset from each marker. Positive values move right.",
         "offy":"Offset Y", "offy_tip":"Vertical offset from each marker. Positive values move up.",
-        "noise":"Noise (0–1)", "noise_tip":"Probability of adding noise to each nontransparent glyph pixel.",
-        "noise_color":"Color %", "noise_color_tip":"Share of glyph noise that uses random colors instead of black or white (0–1).",
+        "noise":"Noise", "noise_tip":"Adjustable range: 0–1; recommended: 0.01–0.08. Higher values add noise to more nontransparent glyph pixels.",
+        "noise_color":"Noise Color", "noise_color_tip":"Adjustable range: 0–1; recommended: 0.10–0.40. Controls how much glyph noise uses random colors instead of black or white.",
         "edge":"Edge Blur", "edge_tip":"Gaussian feather radius applied to glyph alpha edges.",
         "glow_spread":"Glow Size", "glow_spread_tip":"Glow expansion radius in pixels.",
         "glow_feather":"Glow Blur", "glow_feather_tip":"Gaussian feather radius applied to glow alpha.",
         "glow_alpha":"Glow Alpha", "glow_alpha_tip":"0–255. Controls overall glow opacity.",
-        "glow_mix":"Glow Mix", "glow_mix_tip":"Amount of random color mixed into each glow pixel (0–1).",
-        "glow_noise":"Glow Noise", "glow_noise_tip":"Probability of color variation on each glow pixel (0–1).",
-        "glow_noise_color":"Glow Color", "glow_noise_color_tip":"Share of glow noise that uses fully random colors (0–1).",
+        "glow_mix":"Glow Mix", "glow_mix_tip":"Adjustable range: 0–1; recommended: 0.10–0.40. Controls the amount of random color mixed into each glow pixel.",
+        "glow_noise":"Glow Noise", "glow_noise_tip":"Adjustable range: 0–1; recommended: 0.00–0.08. Controls the probability of color variation on each glow pixel.",
+        "glow_noise_color":"Glow Color", "glow_noise_color_tip":"Adjustable range: 0–1; recommended: 0.10–0.40. Controls how much glow noise uses fully random colors.",
         "workers":"Workers", "workers_tip":"Number of worker processes. The default is capped at 8 to limit memory use on large images.",
         "batch":"Batch Size", "batch_tip":"Number of marker points per batch. Small batches add full-image transfer overhead; large batches reduce parallelism. Aim for 2–4 batches per worker.",
+        "zoom_out_tip":"Zoom out the preview; minimum 1%.", "zoom_in_tip":"Zoom in the preview; maximum 800%.",
+        "zoom_value_tip":"Current preview zoom. Use the mouse wheel to zoom; double-click the preview to reset to 100%.",
         "bg_tip":"Preview background only; it is never written to the output file.", "bg":["Dark","White","50% Gray","Grid","Custom"],
         "custom_bg":"Load Preview Background", "custom_bg_tip":"Load a background used only for preview; it is not written to the output.",
         "render":"Generate Watermark", "render_tip":"Generate watermarks at red marker positions in batches, then composite them onto the loaded image.",
@@ -463,14 +467,29 @@ class RenderWorkerMP(QtCore.QThread):
 class ImageView(QtWidgets.QGraphicsView):
     doubleClicked = QtCore.Signal()
     resized = QtCore.Signal()
+    zoomChanged = QtCore.Signal(int)
+    MIN_ZOOM = 0.01
+    MAX_ZOOM = 8.0
+    ZOOM_STEP = 1.2
+    ZOOM_FRAME_MS = 16
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setRenderHint(QtGui.QPainter.Antialiasing, False)
         self.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, False)
+        self.setViewportUpdateMode(QtWidgets.QGraphicsView.MinimalViewportUpdate)
+        self.setOptimizationFlags(
+            QtWidgets.QGraphicsView.DontSavePainterState |
+            QtWidgets.QGraphicsView.DontAdjustForAntialiasing
+        )
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag); self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
         self._default_transform = QtGui.QTransform(); self.setBackgroundBrush(QtGui.QBrush(QtGui.QColor("#222")))
+        self._zoom_target = 1.0
+        self._zoom_timer = QtCore.QTimer(self)
+        self._zoom_timer.setSingleShot(True)
+        self._zoom_timer.setInterval(self.ZOOM_FRAME_MS)
+        self._zoom_timer.timeout.connect(self._apply_pending_zoom)
         self.empty_label = QtWidgets.QLabel(self.viewport())
         self.empty_label.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, True)
         self.empty_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -499,29 +518,62 @@ class ImageView(QtWidgets.QGraphicsView):
         super().resizeEvent(event)
         self._position_empty_label()
         self.resized.emit()
+    def _current_zoom(self):
+        base_scale = max(0.000001, abs(self._default_transform.m11()))
+        return max(0.000001, abs(self.transform().m11()) / base_scale)
+    def _apply_pending_zoom(self):
+        current_zoom = self._current_zoom()
+        factor = self._zoom_target / current_zoom
+        if not math.isclose(factor, 1.0, rel_tol=0.0, abs_tol=1e-9):
+            self.scale(factor, factor)
+        self._zoom_target = self._current_zoom()
+        self.zoomChanged.emit(int(round(self._zoom_target * 100)))
+    def _queue_zoom_steps(self, steps):
+        if math.isclose(steps, 0.0, rel_tol=0.0, abs_tol=1e-12):
+            return
+        base_zoom = self._zoom_target if self._zoom_timer.isActive() else self._current_zoom()
+        target_zoom = base_zoom * (self.ZOOM_STEP ** steps)
+        self._zoom_target = max(self.MIN_ZOOM, min(self.MAX_ZOOM, target_zoom))
+        if not self._zoom_timer.isActive() and not math.isclose(
+                self._zoom_target, self._current_zoom(), rel_tol=0.0, abs_tol=1e-9):
+            self._zoom_timer.start()
+    def zoomIn(self):
+        self._queue_zoom_steps(1.0)
+    def zoomOut(self):
+        self._queue_zoom_steps(-1.0)
     def wheelEvent(self, event: QtGui.QWheelEvent):
-        s = 1.2 if event.angleDelta().y()>0 else 1/1.2; self.scale(s,s)
+        delta = event.angleDelta().y()
+        if delta == 0:
+            event.ignore()
+            return
+        self._queue_zoom_steps(delta / 120.0)
+        event.accept()
+    def resetZoom(self):
+        self._zoom_timer.stop()
+        self.setTransform(self._default_transform)
+        self._zoom_target = 1.0
+        self.zoomChanged.emit(100)
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
-        self.setTransform(self._default_transform); self.doubleClicked.emit(); super().mouseDoubleClickEvent(event)
+        self.resetZoom(); self.doubleClicked.emit(); super().mouseDoubleClickEvent(event)
 
-class HoverInfoButton(QtWidgets.QLabel):
+class HoverInfoButton(QtWidgets.QPushButton):
     NORMAL_STYLE = """
-        background: #555; color:#fff; font-weight:bold; font-size:16px;
-        border-radius:7px; border:1px solid #999; margin-left:3px; margin-right:3px;"""
+        QPushButton { background:#343434; color:#eeeeee; border:1px solid #5c5c5c;
+        border-radius:4px; padding:0; font-weight:bold; }"""
     HOVER_STYLE = """
-        background: #777; color:#fff; font-weight:bold; font-size:16px;
-        border-radius:7px; border:1px solid #dddddd; margin-left:3px; margin-right:3px;"""
+        QPushButton { background:#356f91; color:#eeeeee; border:1px solid #72d1ff;
+        border-radius:4px; padding:0; font-weight:bold; }"""
     PRESSED_STYLE = """
-        background: #333; color:#fff; font-weight:bold; font-size:16px;
-        border-radius:7px; border:1px solid #ffffff; margin-left:3px; margin-right:3px;"""
+        QPushButton { background:#17445f; color:#eeeeee; border:1px solid #72d1ff;
+        border-radius:4px; padding:0; font-weight:bold; }"""
 
     def __init__(self, title: str, msg: str, parent=None):
-        super().__init__(" ? ", parent)
+        super().__init__("?", parent)
         self._title = title
         self.tip = msg
         self.tipBox = None
-        self.setFixedSize(24, 24)
-        self.setAlignment(QtCore.Qt.AlignCenter)
+        self.setFixedSize(28, 28)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setCursor(QtCore.Qt.PointingHandCursor)
         self.setStyleSheet(self.NORMAL_STYLE)
 
@@ -665,7 +717,7 @@ class HoverTipCheckBox(QtWidgets.QCheckBox):
         super().leaveEvent(event)
 
 class ButtonInteractionFilter(QtCore.QObject):
-    """Match Fragmenter Pro v1.3.0 button hover/press feedback."""
+    """Match Fragmenter Pro v1.3.1 button hover/press feedback."""
     def eventFilter(self, obj, event):
         if isinstance(obj, QtWidgets.QPushButton):
             event_type = event.type()
@@ -713,7 +765,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # vertically compressed.
         self.setMinimumSize(1280,1000)
         self.resize(1380,1000)
-        # Match the visual system used by MSW Skin Fragmenter Pro v1.3.0.
+        # Match the visual system used by MSW Skin Fragmenter Pro v1.3.1.
         self.setStyleSheet("""
             QWidget {
                 background: #232323;
@@ -852,7 +904,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.combo_bg = QtWidgets.QComboBox(); self.combo_bg.addItems(UI_TEXT[self.language]["bg"]); self.combo_bg.setCurrentIndex(0)
         self.combo_bg.setToolTip(self._t("bg_tip")); self.combo_bg.currentIndexChanged.connect(lambda _: self.refresh_preview())
         bg_row = QtWidgets.QHBoxLayout(); bg_row.setContentsMargins(0,0,0,0); bg_row.setSpacing(6)
+        self.btn_zoom_out = QtWidgets.QPushButton("-"); self.btn_zoom_out.setFixedWidth(30); self.btn_zoom_out.setToolTip(self._t("zoom_out_tip"))
+        self.zoom_value_label = QtWidgets.QLabel("100%"); self.zoom_value_label.setFixedSize(50,28)
+        self.zoom_value_label.setAlignment(QtCore.Qt.AlignCenter); self.zoom_value_label.setToolTip(self._t("zoom_value_tip"))
+        self.zoom_value_label.setStyleSheet("QLabel{background:#202020;color:#eeeeee;border:1px solid #454545;border-radius:4px;padding:0;}")
+        self.btn_zoom_in = QtWidgets.QPushButton("+"); self.btn_zoom_in.setFixedWidth(30); self.btn_zoom_in.setToolTip(self._t("zoom_in_tip"))
+        self.btn_zoom_out.clicked.connect(self.view.zoomOut); self.btn_zoom_in.clicked.connect(self.view.zoomIn)
+        self.view.zoomChanged.connect(self._set_preview_zoom)
         self.btn_language = QtWidgets.QPushButton(self._t("lang")); self.btn_language.setFixedWidth(46); self.btn_language.clicked.connect(self._toggle_language)
+        bg_row.addWidget(self.btn_zoom_out, 0); bg_row.addWidget(self.zoom_value_label, 0); bg_row.addWidget(self.btn_zoom_in, 0)
         bg_row.addWidget(self.btn_language, 0); bg_row.addWidget(self.combo_bg, 1); right.addLayout(bg_row)
         self.btn_custom_bg = QtWidgets.QPushButton(self._t("custom_bg")); self.btn_custom_bg.setToolTip(self._t("custom_bg_tip"))
         self.btn_custom_bg.clicked.connect(self.on_load_custom_bg); right.addWidget(self.btn_custom_bg)
@@ -914,6 +974,8 @@ class MainWindow(QtWidgets.QMainWindow):
             label.setText(self._t(key)); help_button._title = self._t(key); help_button.tip = self._t(key + "_tip")
         bg_index = self.combo_bg.currentIndex(); self.combo_bg.blockSignals(True); self.combo_bg.clear(); self.combo_bg.addItems(self._t("bg")); self.combo_bg.setCurrentIndex(bg_index); self.combo_bg.blockSignals(False)
         self.combo_bg.setToolTip(self._t("bg_tip")); self.btn_language.setText(self._t("lang")); self.btn_language.setToolTip(self._t("lang_tip"))
+        self.btn_zoom_out.setToolTip(self._t("zoom_out_tip")); self.btn_zoom_in.setToolTip(self._t("zoom_in_tip"))
+        self.zoom_value_label.setToolTip(self._t("zoom_value_tip"))
         self.btn_custom_bg.setText(self._t("custom_bg")); self.btn_custom_bg.setToolTip(self._t("custom_bg_tip"))
         self.spin_workers.setSuffix(self._t("worker_suffix")); self.spin_chunks.setSuffix(self._t("batch_suffix"))
         self.btn_render.setText(self._t("render")); self.btn_render.setToolTip(self._t("render_tip"))
@@ -930,6 +992,10 @@ class MainWindow(QtWidgets.QMainWindow):
         if level=="warn": self.status_label.setStyleSheet("QLabel{color:#ffd966;font-size:15px;font-weight:bold;}")
         elif level=="err": self.status_label.setStyleSheet("QLabel{color:#ff5555;font-size:15px;font-weight:bold;}")
         else: self.status_label.setStyleSheet("QLabel{color:#00ff00;font-size:15px;font-weight:bold;}")
+
+    @QtCore.Slot(int)
+    def _set_preview_zoom(self, percent):
+        self.zoom_value_label.setText(f"{percent}%")
 
     def _apply_consistent_control_heights(self):
         for widget in self.findChildren(QtWidgets.QPushButton):
@@ -1132,7 +1198,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if signature == self._empty_preview_signature:
                 return
             self._empty_preview_signature = signature
-            self.view.setTransform(self.view._default_transform)
+            self.view.resetZoom()
             if self.pixmap_item is not None:
                 self.pixmap_item.setPixmap(QtGui.QPixmap())
             if bg_mode == 0:
@@ -1185,6 +1251,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if self.pixmap_item is None:
             self.pixmap_item = self.scene.addPixmap(qpix)
+            self.pixmap_item.setTransformationMode(QtCore.Qt.FastTransformation)
         else:
             self.pixmap_item.setPixmap(qpix)
 
