@@ -4,7 +4,7 @@
 
 MSW 5 Thunder Stamper is a Windows desktop tool for adding configurable authenticity marks to images. It is intended to help creators identify and protect their own work.
 
-Current release: **v1.1.0**
+Current release: **v1.1.1**
 
 [Download the latest release](https://github.com/duoduo-88/MSW-5-Thunder-Stamper/releases/latest)
 
